@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>image/girl.png</file>
+        <file>image/teacher.png</file>
+        <file>image/orange-book.png</file>
+        <file>image/blue-book.png</file>
+        <file>image/score-book.png</file>
+        <file>image/score-chalkbox.png</file>
+        <file>image/blackboard.png</file>
+    </qresource>
+</RCC>
