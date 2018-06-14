@@ -1,19 +1,22 @@
 #include "boss.h"
 
-Boss::Boss()
+Boss::Boss() : dir(true)
 {
-    this->setPos(480,50);
+    setPos(480,50);
 }
 
 void Boss::move()
 {
-    bool dir = true;
-    if(x() <= 0)
-        dir = true;
-    else if(x() <= 800)
-        dir = false;
     if(dir == true)
-        this->setPos(this->x()-10, this->y());
+    {
+        this->setPos(this->x()+2, this->y());
+        if (x()>=950)
+           dir = false;
+    }
     if(dir == false)
-        this->setPos(this->x()+10, this->y());
+    {
+        this->setPos(this->x()-2, this->y());
+        if(x() <= 5)
+            dir = true;
+    }
 }

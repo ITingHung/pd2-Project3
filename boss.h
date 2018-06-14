@@ -7,7 +7,7 @@
 
 class Boss : public QObject, public QGraphicsPixmapItem
 {
-    //Q_OBJECT
+Q_OBJECT
 public:
     Boss();
     int getElement(int index);
@@ -18,7 +18,8 @@ public slots:
     void move();
 
 private:
-    int bossPo[4];
+    bool dir;
+//    int bossPo[4];
 
 };
 

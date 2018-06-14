@@ -27,14 +27,21 @@ public:
     ~MainWindow();
 
 public slots:
-    void hpChange(int role);
+    void hpChange_slot(int role);
+    void setGameTime_slot();
+    void connectSkillTime_slot();
+    void disconnectSkillTime_slot();
+    void skillTimeCount_slot();
+
+signals:
 
 private:
     Ui::MainWindow *ui;
     Scene *scene;
+    QTimer *timer, *secondtimer;
     QGraphicsPixmapItem *background, *player, *boss, *playerScore, *bossScore;
-    QTimer *timer;
-    int playerhp, bosshp;
+    int  counttime, playerhp, bosshp, playerscore, bossscore;
+    void ScoreChange(int casenum);
 };
 
 #endif // MAINWINDOW_H
