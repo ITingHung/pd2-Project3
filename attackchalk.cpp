@@ -3,9 +3,16 @@
 #include <QGraphicsScene>
 #include <QDebug>
 
-AttackChalk::AttackChalk()
+AttackChalk::AttackChalk(int mode)
 {
-
+    switch(mode) {
+    case 0:
+        this->setPixmap(QPixmap(":/image/bluechalk.png").scaled(chalksize,chalksize));
+        break;
+    case 1:
+        this->setPixmap(QPixmap(":/image/yellowchalk.png").scaled(chalksize,chalksize));
+        break;
+    }
 }
 
 void AttackChalk::fly()

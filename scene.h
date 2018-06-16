@@ -13,16 +13,17 @@ using namespace std;
 #include "attackbook.h"
 #include "attackchalk.h"
 
-
 class Scene : public QGraphicsScene
 {
     Q_OBJECT
 public:
+    friend class MainWindow;
     Scene();
+    QTimer *timer;
     int stimeinterval;
     void gameGround();
     void useplayerskill();
-    void attackmode(int playermode);
+    void playerattack(int playermode);
 
 public slots:
     //virtual void mousePressEvent(QMouseEvent *e);
@@ -47,7 +48,7 @@ private:
     int btimeinterval;
     int skillcount;
     int playermode, bossmode, bossmodecount;
-    QTimer *timer, *secondtimer;
+    QTimer *secondtimer;
     QGraphicsPixmapItem *Gamebackground, *playerScore, *bossScore;
     QGraphicsPixmapItem *playerskill1, *playerskill2, *playerskill3, *playerskill4, *playerskill5;
     Player *player;

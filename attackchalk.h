@@ -8,7 +8,7 @@ class AttackChalk : public QObject, public QGraphicsPixmapItem
 {
 Q_OBJECT
 public:
-    AttackChalk();
+    AttackChalk(int mode);
     static const int chalksize = 50;
 
 public slots:
@@ -17,6 +17,9 @@ public slots:
 signals:
     void attack();
     void deletechalk();
+
+private:
+
 };
 
 #endif // ATTACKCHALK_H

@@ -6,8 +6,8 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    timer(new QTimer), secondtimer(new QTimer), counttime(60),
-    playerhp(100),bosshp(100), playerscore(0), bossscore(0)
+    gamestart(true), timer(new QTimer), secondtimer(new QTimer), counttime(10),
+    playerscore(0), bossscore(0)
 {
     ui->setupUi(this);
     scene = new Scene;
@@ -16,15 +16,20 @@ MainWindow::MainWindow(QWidget *parent) :
     secondtimer->start(1000);
     scene->gameGround();
 
-    QPalette HpBarColor;
+    QPalette HpBarColor, GameoverColor;
     HpBarColor.setColor(QPalette::Highlight, QColor(Qt::red));
-    ui->PlayerhpBar->setValue(playerhp); ui->BosshpBar->setValue(bosshp);
+    GameoverColor.setColor(QPalette::WindowText, QColor(Qt::yellow));
+    ui->PlayerhpBar->setValue(scene->player->playerhp); ui->BosshpBar->setValue(scene->boss->bosshp);
     ui->PlayerhpBar->setPalette(HpBarColor); ui->BosshpBar->setPalette(HpBarColor);
+    ui->GameOver->setPalette(GameoverColor); ui->GameOver->setVisible(false);
+    ui->YouWin->setPalette(GameoverColor); ui->YouWin->setVisible(false);
+    ui->GameTime->setVisible(false); ui->TimeLable->setVisible(false);
+    this->connect(ui->Start, SIGNAL(clicked()), this, SLOT(startClick_slot()));
 
-    this->connect(secondtimer, SIGNAL(timeout()), this, SLOT(setGameTime_slot()));
     this->connect(scene, SIGNAL(skilluse()), this, SLOT(connectSkillTime_slot()));
     this->connect(scene, SIGNAL(timeup()), this, SLOT(disconnectSkillTime_slot()));
     this->connect(scene, SIGNAL(attacksuccess(int)), this, SLOT(hpChange_slot(int)));
+    this->connect(this, SIGNAL(gameover()), this, SLOT(Gameover_slot()));
 }
 
 MainWindow::~MainWindow()
@@ -36,22 +41,22 @@ void MainWindow::hpChange_slot(int role)
 {
     switch(role){
     case 1:
-        ui->PlayerhpBar->setValue(playerhp-1);
-        playerhp -= 1;
+        ui->PlayerhpBar->setValue(scene->player->playerhp-1);
+        scene->player->playerhp -= 1;
         ScoreChange(1);
         break;
     case 2:
-        ui->BosshpBar->setValue(bosshp-1);
-        bosshp -= 1;
+        ui->BosshpBar->setValue(scene->boss->bosshp-1);
+        scene->boss->bosshp -= 1;
         ScoreChange(2);
         break;
     case 3:
-        ui->BosshpBar->setValue(bosshp-2);
-        bosshp -= 2;
+        ui->BosshpBar->setValue(scene->boss->bosshp-2);
+        scene->boss->bosshp -= 2;
         if(ui->BosshpBar->value()==1)
         {
-            ui->BosshpBar->setValue(bosshp-1);
-            bosshp -= 1;
+            ui->BosshpBar->setValue(scene->boss->bosshp-1);
+            scene->boss->bosshp -= 1;
         }
         ScoreChange(3);
         break;
@@ -63,6 +68,23 @@ void MainWindow::setGameTime_slot()
     counttime -= 1;
     QString time = QString::number(counttime);
     ui->GameTime->setText(time);
+    if (counttime == 0)
+    {
+        emit gameover();
+        this->disconnect(secondtimer, SIGNAL(timeout()), this, SLOT(setGameTime_slot()));
+        scene->disconnect(scene->timer, SIGNAL(timeout()), scene, SLOT(bosstime_slot()));
+        scene->boss->disconnect(scene->boss->timer, SIGNAL(timeout()), scene->boss, SLOT(move()));
+    }
+}
+
+void MainWindow::startClick_slot()
+{
+    ui->Start->setVisible(false);
+    ui->GameTime->setVisible(true); ui->TimeLable->setVisible(true);
+    this->connect(secondtimer, SIGNAL(timeout()), this, SLOT(setGameTime_slot()));
+    scene->connect(scene->timer, SIGNAL(timeout()), scene, SLOT(bosstime_slot()));
+    scene->boss->connect(scene->boss->timer, SIGNAL(timeout()), scene->boss, SLOT(move()));
+    gamestart = true;
 }
 
 void MainWindow::connectSkillTime_slot()
@@ -101,4 +123,12 @@ void MainWindow::ScoreChange(int casenum)
     }
     ui->BossScoreBar->display(bossscore);
     ui->PlayerScoreBar->display(playerscore);
+}
+
+void MainWindow::Gameover_slot()
+{
+    if(playerscore>=bossscore)
+        ui->YouWin->setVisible(true);
+    if(bossscore>playerscore)
+        ui->GameOver->setVisible(true);
 }

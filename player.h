@@ -10,14 +10,14 @@ class Player : public QGraphicsPixmapItem
 {
 public:
     Player();
-//    void attackmode(int mode);
+    void move(int dir);
+    int playerhp;
     static const int playersize = 120;
 
 public slots:
 
 private:
-//    AttackBook *book_tmp;
-//    vector<AttackBook*> book;
+
 };
 
 #endif // PLAYER_H

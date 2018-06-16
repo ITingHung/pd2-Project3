@@ -1,10 +1,25 @@
 #include "player.h"
 
-Player::Player()
+Player::Player() : playerhp(100)
 {
     this->setPos(480,550);
 }
 
+void Player::move(int dir)
+{
+    switch(dir){
+    case 1:
+        this->setPos(x()-10, y());
+        if (x()<=5)
+            this->setPos(5, y());
+        break;
+    case 2:
+        this->setPos(x()+10, y());
+        if (x()>=950)
+            this->setPos(950, y());
+        break;
+    }
+}
 //void Player::attackmode(int mode)
 //{
 //    book_tmp = new AttackBook;

@@ -23,17 +23,22 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    friend class scene;
+    bool gamestart;
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 public slots:
     void hpChange_slot(int role);
     void setGameTime_slot();
+    void startClick_slot();
     void connectSkillTime_slot();
     void disconnectSkillTime_slot();
     void skillTimeCount_slot();
+    void Gameover_slot();
 
 signals:
+    void gameover();
 
 private:
     Ui::MainWindow *ui;

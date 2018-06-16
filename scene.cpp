@@ -3,8 +3,8 @@
 #include <QDebug>
 
 Scene::Scene() :
-    stimeinterval(5), screenW(1500), screenH(800), btimeinterval(0), skillcount(0), playermode(0), bossmode(0), bossmodecount(0),
-    timer(new QTimer), secondtimer(new QTimer), player(new Player), boss(new Boss), skillavailable(true)
+    timer(new QTimer), stimeinterval(5), screenW(1500), screenH(800), btimeinterval(0), skillcount(0), playermode(0), bossmode(0), bossmodecount(0),
+    secondtimer(new QTimer), player(new Player), boss(new Boss), skillavailable(true)
 {
     this->setSceneRect(0, 0, screenW, screenH);
     timer->start(10);
@@ -37,82 +37,71 @@ void Scene::gameGround()
     addItem(playerskill4); playerskill4->setPos(1300,500);
     addItem(playerskill5); playerskill5->setPos(1365,500);
 
-    this->connect(timer, SIGNAL(timeout()), this, SLOT(bosstime_slot()));
     this->connect(this, SIGNAL(bossattack(int)), this, SLOT(bossattack_slot(int)));
-    boss->connect(timer, SIGNAL(timeout()), boss, SLOT(move()));
 }
 
 void Scene::keyPressEvent(QKeyEvent *e)
 {
-    switch(e->key()) {
-    case Qt::Key_Left:
-        player->setPos(player->x()-10, player->y());
-        if (player->x()<=5)
-            player->setPos(5, player->y());
-        break;
-    case Qt::Key_Right:
-        player->setPos(player->x()+10, player->y());
-        if (player->x()>=950)
-            player->setPos(950, player->y());
-        break;
-    case Qt::Key_Up:
-        attackmode(playermode);
-        break;
-    case Qt::Key_Space:
-        if(skillavailable == true)
-        {
-            if(playerskill1->QGraphicsItem::isVisible() || playerskill2->QGraphicsItem::isVisible() || playerskill3->QGraphicsItem::isVisible() || playerskill4->QGraphicsItem::isVisible() || playerskill5->QGraphicsItem::isVisible())
+//    if (gamestart == true)
+//    {
+        switch(e->key()) {
+        case Qt::Key_Left:
+            player->move(1);
+            break;
+        case Qt::Key_Right:
+            player->move(2);
+            break;
+        case Qt::Key_Up:
+            playerattack(playermode);
+            break;
+        case Qt::Key_Space:
+            if(skillavailable == true)
             {
-                playermode = 1;
-                skillavailable = false;
-                secondtimer->start(1000);
-                this->connect(secondtimer, SIGNAL(timeout()), this, SLOT(secondcount_slot()));
-                emit skilluse();
-                if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible() && playerskill4->QGraphicsItem::isVisible() && playerskill5->QGraphicsItem::isVisible())
+                if(playerskill1->QGraphicsItem::isVisible() || playerskill2->QGraphicsItem::isVisible() || playerskill3->QGraphicsItem::isVisible() || playerskill4->QGraphicsItem::isVisible() || playerskill5->QGraphicsItem::isVisible())
                 {
-                    playerskill5->setVisible(false);
+                    playermode = 1;
+                    skillavailable = false;
+                    secondtimer->start(1000);
+                    this->connect(secondtimer, SIGNAL(timeout()), this, SLOT(secondcount_slot()));
+                    emit skilluse();
+                    if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible() && playerskill4->QGraphicsItem::isVisible() && playerskill5->QGraphicsItem::isVisible())
+                    {
+                        playerskill5->setVisible(false);
+                        break;
+                    }
+                    if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible() && playerskill4->QGraphicsItem::isVisible())
+                    {
+                        playerskill4->setVisible(false);
+                        break;
+                    }
+                    if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible())
+                    {
+                        playerskill3->setVisible(false);
+                        break;
+                    }
+                    if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible())
+                    {
+                        playerskill2->setVisible(false);
+                        break;
+                    }
+                    if(playerskill1->QGraphicsItem::isVisible())
+                    {
+                        playerskill1->setVisible(false);
+                        break;
+                    }
+                }
+                else
+                {
                     break;
                 }
-                if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible() && playerskill4->QGraphicsItem::isVisible())
-                {
-                    playerskill4->setVisible(false);
-                    break;
-                }
-                if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible())
-                {
-                    playerskill3->setVisible(false);
-                    break;
-                }
-                if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible())
-                {
-                    playerskill2->setVisible(false);
-                    break;
-                }
-                if(playerskill1->QGraphicsItem::isVisible())
-                {
-                    playerskill1->setVisible(false);
-                    break;
-                }
-            }
-            else
-            {
-                break;
             }
         }
-    }
+//    }
 }
 
-void Scene::attackmode(int playermode)
+void Scene::playerattack(int playermode)
 {
-    book_tmp = new AttackBook;
-    switch(playermode) {
-    case 0:
-        book_tmp->setPixmap(QPixmap(":/image/orange-book.png").scaled(book_tmp->booksize,book_tmp->booksize));
-        break;
-    case 1:
-        book_tmp->setPixmap(QPixmap(":/image/dictionary.png").scaled(book_tmp->skillbooksize,book_tmp->skillbooksize));
-        break;
-    }
+    book_tmp = new AttackBook(playermode);
     addItem(book_tmp);
     book_tmp->setPos(player->x() + player->pixmap().width()/2 - book_tmp->pixmap().width()/2, player->y() - book_tmp->pixmap().height());
     book_tmp->connect(timer, SIGNAL(timeout()), book_tmp, SLOT(fly()));
@@ -137,15 +126,7 @@ void Scene::secondcount_slot()
 
 void Scene::bossattack_slot(int bossmode)
 {
-    chalk_tmp = new AttackChalk;
-    switch(bossmode) {
-    case 0:
-        chalk_tmp->setPixmap(QPixmap(":/image/bluechalk.png").scaled(chalk_tmp->chalksize,chalk_tmp->chalksize));
-        break;
-    case 1:
-        chalk_tmp->setPixmap(QPixmap(":/image/yellowchalk.png").scaled(chalk_tmp->chalksize,chalk_tmp->chalksize));
-        break;
-    }
+    chalk_tmp = new AttackChalk(bossmode);
     addItem(chalk_tmp);
     chalk_tmp->setPos(boss->x() + boss->pixmap().width()/2 - chalk_tmp->pixmap().width()/2, boss->y() + boss->pixmap().height());
     chalk_tmp->connect(timer, SIGNAL(timeout()), chalk_tmp, SLOT(fly()));
@@ -157,6 +138,7 @@ void Scene::bossattack_slot(int bossmode)
 
 void Scene::bosstime_slot()
 {
+    //Mode change with time
     bossmodecount += 1;
     if (bossmodecount == 1000)
         bossmode = 1;
@@ -187,7 +169,7 @@ void Scene::bosstime_slot()
 
 void Scene::checkplayerhp_slot()
 {
-    for (int i=0; i<chalk.size(); ++i)
+    for (unsigned int i=0; i<chalk.size(); ++i)
     {
         if(chalk.at(i)->y()==548 && chalk.at(i)->x()>=(player->x()-chalk_tmp->chalksize) && chalk.at(i)->x()<=(player->x()+player->playersize))
         {
@@ -199,18 +181,21 @@ void Scene::checkplayerhp_slot()
 
 void Scene::checkbosshp_slot()
 {
-    for (int i=0; i<book.size(); ++i)
+    for (unsigned int i=0; i<book.size(); ++i)
     {
-        if(book.at(i)->y()==122 && (book.at(i)->x())>=(boss->x()-book_tmp->booksize) && (book.at(i)->x())<=(boss->x()+boss->bosssize))
+        if(book.at(i)->y()==122 || book.at(i)->y()==123)
         {
-            book.at(i)->setVisible(false);
-            switch(playermode) {
-            case 0:
-                emit attacksuccess(2);
-                break;
-            case 1:
-                emit attacksuccess(3);
-                break;
+            if((book.at(i)->x())>=(boss->x()-book_tmp->booksize) && (book.at(i)->x())<=(boss->x()+boss->bosssize))
+            {
+                book.at(i)->setVisible(false);
+                switch(playermode) {
+                case 0:
+                    emit attacksuccess(2);
+                    break;
+                case 1:
+                    emit attacksuccess(3);
+                    break;
+                }
             }
         }
     }

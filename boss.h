@@ -10,6 +10,8 @@ class Boss : public QObject, public QGraphicsPixmapItem
 Q_OBJECT
 public:
     Boss();
+    QTimer *timer;
+    int bosshp;
     int getElement(int index);
     void setElement(int index,int value);
     static const int bosssize = 120;
@@ -19,7 +21,6 @@ public slots:
 
 private:
     bool dir;
-//    int bossPo[4];
 
 };
 
