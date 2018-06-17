@@ -61,6 +61,8 @@ void MainWindow::hpChange_slot(int role)
         ScoreChange(3);
         break;
     }
+    if(ui->PlayerhpBar->value()==0 || ui->BosshpBar->value()==0)
+       emit gameover();
 }
 
 void MainWindow::setGameTime_slot()
@@ -71,14 +73,12 @@ void MainWindow::setGameTime_slot()
     if (counttime == 0)
     {
         emit gameover();
-        this->disconnect(secondtimer, SIGNAL(timeout()), this, SLOT(setGameTime_slot()));
-        scene->disconnect(scene->timer, SIGNAL(timeout()), scene, SLOT(bosstime_slot()));
-        scene->boss->disconnect(scene->boss->timer, SIGNAL(timeout()), scene->boss, SLOT(move()));
     }
 }
 
 void MainWindow::startClick_slot()
 {
+    scene->setGamemode(true);
     ui->Start->setVisible(false);
     ui->GameTime->setVisible(true); ui->TimeLable->setVisible(true);
     this->connect(secondtimer, SIGNAL(timeout()), this, SLOT(setGameTime_slot()));
@@ -126,6 +126,11 @@ void MainWindow::ScoreChange(int casenum)
 
 void MainWindow::Gameover_slot()
 {
+    scene->setGamemode(false);
+    this->disconnect(secondtimer, SIGNAL(timeout()), this, SLOT(setGameTime_slot()));
+    scene->disconnect(scene->timer, SIGNAL(timeout()), scene, SLOT(bosstime_slot()));
+    scene->boss->disconnect(scene->boss->timer, SIGNAL(timeout()), scene->boss, SLOT(move()));
+
     if(playerscore>=bossscore)
         ui->YouWin->setVisible(true);
     if(bossscore>playerscore)

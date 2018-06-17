@@ -23,6 +23,7 @@ public:
     Scene();
     QTimer *timer;
     int stimeinterval;
+    void setGamemode(bool mode);
     void gameGround();
     void useplayerskill();
     void playerattack(int playermode);
@@ -44,6 +45,7 @@ signals:
     void timeup();
 
 private:
+    bool gamemode;
     const int screenW;
     const int screenH;
     int btimeinterval;

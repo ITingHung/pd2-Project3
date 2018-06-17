@@ -3,7 +3,8 @@
 #include <QDebug>
 
 Scene::Scene() :
-    timer(new QTimer), stimeinterval(5), screenW(1500), screenH(800), btimeinterval(0), skillcount(0), playermode(0), bossmode(0), bossmodecount(0),
+    timer(new QTimer), stimeinterval(5), gamemode(false), screenW(1500), screenH(800),
+    btimeinterval(0), skillcount(0), playermode(0), bossmode(0), bossmodecount(0),
     secondtimer(new QTimer), player(new Player), boss(new Boss), skillavailable(true)
 {
     this->setSceneRect(0, 0, screenW, screenH);
@@ -40,59 +41,67 @@ void Scene::gameGround()
     this->connect(this, SIGNAL(bossattack(int)), this, SLOT(bossattack_slot(int)));
 }
 
+void Scene::setGamemode(bool mode)
+{
+    gamemode = mode;
+}
+
 void Scene::keyPressEvent(QKeyEvent *e)
 {
-    switch(e->key()) {
-    case Qt::Key_Left:
-        player->setElement(1);
-        player->move();
-        break;
-    case Qt::Key_Right:
-        player->setElement(2);
-        player->move();
-        break;
-    case Qt::Key_Up:
-        playerattack(playermode);
-        break;
-    case Qt::Key_Space:
-        if(skillavailable == true)
-        {
-            if(playerskill1->QGraphicsItem::isVisible() || playerskill2->QGraphicsItem::isVisible() || playerskill3->QGraphicsItem::isVisible() || playerskill4->QGraphicsItem::isVisible() || playerskill5->QGraphicsItem::isVisible())
+    if (gamemode == true)
+    {
+        switch(e->key()) {
+        case Qt::Key_Left:
+            player->setElement(1);
+            player->move();
+            break;
+        case Qt::Key_Right:
+            player->setElement(2);
+            player->move();
+            break;
+        case Qt::Key_Up:
+            playerattack(playermode);
+            break;
+        case Qt::Key_Space:
+            if(skillavailable == true)
             {
-                playermode = 1;
-                skillavailable = false;
-                secondtimer->start(1000);
-                this->connect(secondtimer, SIGNAL(timeout()), this, SLOT(secondcount_slot()));
-                emit skilluse();
-                if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible() && playerskill4->QGraphicsItem::isVisible() && playerskill5->QGraphicsItem::isVisible())
+                if(playerskill1->QGraphicsItem::isVisible() || playerskill2->QGraphicsItem::isVisible() || playerskill3->QGraphicsItem::isVisible() || playerskill4->QGraphicsItem::isVisible() || playerskill5->QGraphicsItem::isVisible())
                 {
-                    playerskill5->setVisible(false);
+                    playermode = 1;
+                    skillavailable = false;
+                    secondtimer->start(1000);
+                    this->connect(secondtimer, SIGNAL(timeout()), this, SLOT(secondcount_slot()));
+                    emit skilluse();
+                    if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible() && playerskill4->QGraphicsItem::isVisible() && playerskill5->QGraphicsItem::isVisible())
+                    {
+                        playerskill5->setVisible(false);
+                        break;
+                    }
+                    if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible() && playerskill4->QGraphicsItem::isVisible())
+                    {
+                        playerskill4->setVisible(false);
+                        break;
+                    }
+                    if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible())
+                    {
+                        playerskill3->setVisible(false);
+                        break;
+                    }
+                    if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible())
+                    {
+                        playerskill2->setVisible(false);
+                        break;
+                    }
+                    if(playerskill1->QGraphicsItem::isVisible())
+                    {
+                        playerskill1->setVisible(false);
+                        break;
+                    }
+                }
+                else
+                {
                     break;
                 }
-                if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible() && playerskill4->QGraphicsItem::isVisible())
-                {
-                    playerskill4->setVisible(false);
-                    break;
-                }
-                if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible())
-                {
-                    playerskill3->setVisible(false);
-                    break;
-                }
-                if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible())
-                {
-                    playerskill2->setVisible(false);
-                    break;
-                }
-                if(playerskill1->QGraphicsItem::isVisible())
-                {
-                    playerskill1->setVisible(false);
-                    break;
-                }
-            }
-            else
-            {
-                break;
             }
         }
     }

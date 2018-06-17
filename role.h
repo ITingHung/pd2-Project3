@@ -7,11 +7,8 @@
 
 class Role : public QObject, public QGraphicsPixmapItem
 {
-    //Q_OBJECT
-
 public:
     Role();
-    //virtual~Role();
     int rolehp;
     QTimer *timer;
     static const int rolesize = 120;
