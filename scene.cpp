@@ -17,8 +17,8 @@ void Scene::gameGround()
     addItem(Gamebackground);
     Gamebackground->setPos(0,0);
 
-    player->setPixmap(QPixmap(":/image/girl.png").scaled(player->playersize, player->playersize));
-    boss->setPixmap(QPixmap(":/image/teacher.png").scaled(boss->bosssize, boss->bosssize));
+    player->setPixmap(QPixmap(":/image/girl.png").scaled(player->rolesize, player->rolesize));
+    boss->setPixmap(QPixmap(":/image/teacher.png").scaled(boss->rolesize, boss->rolesize));
     playerScore = new QGraphicsPixmapItem(QPixmap(":/image/score-book.png"));
     bossScore = new QGraphicsPixmapItem(QPixmap(":/image/score-chalkbox.png"));
     playerskill1 = new QGraphicsPixmapItem(QPixmap(":/image/dictionary.png").scaled(book_tmp->booksize,book_tmp->booksize));
@@ -42,61 +42,60 @@ void Scene::gameGround()
 
 void Scene::keyPressEvent(QKeyEvent *e)
 {
-//    if (gamestart == true)
-//    {
-        switch(e->key()) {
-        case Qt::Key_Left:
-            player->move(1);
-            break;
-        case Qt::Key_Right:
-            player->move(2);
-            break;
-        case Qt::Key_Up:
-            playerattack(playermode);
-            break;
-        case Qt::Key_Space:
-            if(skillavailable == true)
+    switch(e->key()) {
+    case Qt::Key_Left:
+        player->setElement(1);
+        player->move();
+        break;
+    case Qt::Key_Right:
+        player->setElement(2);
+        player->move();
+        break;
+    case Qt::Key_Up:
+        playerattack(playermode);
+        break;
+    case Qt::Key_Space:
+        if(skillavailable == true)
+        {
+            if(playerskill1->QGraphicsItem::isVisible() || playerskill2->QGraphicsItem::isVisible() || playerskill3->QGraphicsItem::isVisible() || playerskill4->QGraphicsItem::isVisible() || playerskill5->QGraphicsItem::isVisible())
             {
-                if(playerskill1->QGraphicsItem::isVisible() || playerskill2->QGraphicsItem::isVisible() || playerskill3->QGraphicsItem::isVisible() || playerskill4->QGraphicsItem::isVisible() || playerskill5->QGraphicsItem::isVisible())
+                playermode = 1;
+                skillavailable = false;
+                secondtimer->start(1000);
+                this->connect(secondtimer, SIGNAL(timeout()), this, SLOT(secondcount_slot()));
+                emit skilluse();
+                if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible() && playerskill4->QGraphicsItem::isVisible() && playerskill5->QGraphicsItem::isVisible())
                 {
-                    playermode = 1;
-                    skillavailable = false;
-                    secondtimer->start(1000);
-                    this->connect(secondtimer, SIGNAL(timeout()), this, SLOT(secondcount_slot()));
-                    emit skilluse();
-                    if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible() && playerskill4->QGraphicsItem::isVisible() && playerskill5->QGraphicsItem::isVisible())
-                    {
-                        playerskill5->setVisible(false);
-                        break;
-                    }
-                    if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible() && playerskill4->QGraphicsItem::isVisible())
-                    {
-                        playerskill4->setVisible(false);
-                        break;
-                    }
-                    if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible())
-                    {
-                        playerskill3->setVisible(false);
-                        break;
-                    }
-                    if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible())
-                    {
-                        playerskill2->setVisible(false);
-                        break;
-                    }
-                    if(playerskill1->QGraphicsItem::isVisible())
-                    {
-                        playerskill1->setVisible(false);
-                        break;
-                    }
+                    playerskill5->setVisible(false);
+                    break;
                 }
-                else
+                if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible() && playerskill4->QGraphicsItem::isVisible())
                 {
+                    playerskill4->setVisible(false);
+                    break;
+                }
+                if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible() && playerskill3->QGraphicsItem::isVisible())
+                {
+                    playerskill3->setVisible(false);
+                    break;
+                }
+                if(playerskill1->QGraphicsItem::isVisible() && playerskill2->QGraphicsItem::isVisible())
+                {
+                    playerskill2->setVisible(false);
+                    break;
+                }
+                if(playerskill1->QGraphicsItem::isVisible())
+                {
+                    playerskill1->setVisible(false);
                     break;
                 }
             }
+            else
+            {
+                break;
+            }
         }
-//    }
+    }
 }
 
 void Scene::playerattack(int playermode)
@@ -171,7 +170,7 @@ void Scene::checkplayerhp_slot()
 {
     for (unsigned int i=0; i<chalk.size(); ++i)
     {
-        if(chalk.at(i)->y()==548 && chalk.at(i)->x()>=(player->x()-chalk_tmp->chalksize) && chalk.at(i)->x()<=(player->x()+player->playersize))
+        if(chalk.at(i)->y()==548 && chalk.at(i)->x()>=(player->x()-chalk_tmp->chalksize) && chalk.at(i)->x()<=(player->x()+player->rolesize))
         {
             chalk.at(i)->setVisible(false);
             emit attacksuccess(1);
@@ -185,7 +184,7 @@ void Scene::checkbosshp_slot()
     {
         if(book.at(i)->y()==122 || book.at(i)->y()==123)
         {
-            if((book.at(i)->x())>=(boss->x()-book_tmp->booksize) && (book.at(i)->x())<=(boss->x()+boss->bosssize))
+            if((book.at(i)->x())>=(boss->x()-book_tmp->booksize) && (book.at(i)->x())<=(boss->x()+boss->rolesize))
             {
                 book.at(i)->setVisible(false);
                 switch(playermode) {

@@ -24,7 +24,6 @@ class MainWindow : public QMainWindow
 
 public:
     friend class scene;
-    bool gamestart;
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 

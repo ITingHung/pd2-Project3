@@ -1,26 +1,23 @@
 #ifndef BOSS_H
 #define BOSS_H
 
-#include <QObject>
-#include <QGraphicsPixmapItem>
 #include <QTimer>
 
-class Boss : public QObject, public QGraphicsPixmapItem
+#include "role.h"
+
+class Boss : public Role
 {
-Q_OBJECT
+    Q_OBJECT
+
 public:
     Boss();
-    QTimer *timer;
-    int bosshp;
-    int getElement(int index);
-    void setElement(int index,int value);
-    static const int bosssize = 120;
 
 public slots:
-    void move();
+    virtual void move();
 
 private:
-    bool dir;
+    virtual void setElement(int value);
+    int dir;
 
 };
 

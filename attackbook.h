@@ -7,6 +7,7 @@
 class AttackBook : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
+
 public:
     AttackBook(int mode);
     static const int booksize = 50;

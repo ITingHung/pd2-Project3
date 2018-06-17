@@ -1,23 +1,28 @@
 #include "boss.h"
 
-Boss::Boss() : timer(new QTimer), bosshp(100), dir(true)
+Boss::Boss() : dir(1)
 {
     setPos(480,50);
-    timer->start(10);
 }
 
 void Boss::move()
 {
-    if(dir == true)
+    if(dir == 1)
     {
         this->setPos(this->x()+2, this->y());
         if (x()>=950)
-           dir = false;
+           setElement(2);
     }
-    if(dir == false)
+    if(dir == 2)
     {
         this->setPos(this->x()-2, this->y());
         if(x() <= 5)
-            dir = true;
+            setElement(1);
     }
 }
+
+void Boss::setElement(int value)
+{
+    dir = value;
+}
+

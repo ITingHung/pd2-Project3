@@ -30,7 +30,8 @@ SOURCES += \
     attackbook.cpp \
     scene.cpp \
     attackchalk.cpp \
-    boss.cpp
+    boss.cpp \
+    role.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -38,7 +39,8 @@ HEADERS += \
     attackbook.h \
     scene.h \
     attackchalk.h \
-    boss.h
+    boss.h \
+    role.h
 
 FORMS += \
         mainwindow.ui

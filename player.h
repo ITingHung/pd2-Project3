@@ -2,21 +2,19 @@
 #define PLAYER_H
 
 #include "attackbook.h"
-#include <QGraphicsPixmapItem>
-//#include <vector>
-//using namespace std;
+#include "role.h"
 
-class Player : public QGraphicsPixmapItem
+class Player : public Role
 {
 public:
     Player();
-    void move(int dir);
-    int playerhp;
-    static const int playersize = 120;
+    virtual void move();
+    void setElement(int value);
 
 public slots:
 
 private:
+    int dir;
 
 };
 

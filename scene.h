@@ -8,6 +8,7 @@
 #include <vector>
 using namespace std;
 
+#include "role.h"
 #include "player.h"
 #include "boss.h"
 #include "attackbook.h"
@@ -16,6 +17,7 @@ using namespace std;
 class Scene : public QGraphicsScene
 {
     Q_OBJECT
+
 public:
     friend class MainWindow;
     Scene();
@@ -26,7 +28,6 @@ public:
     void playerattack(int playermode);
 
 public slots:
-    //virtual void mousePressEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void bossattack_slot(int bossmode);
     void bosstime_slot();
@@ -51,8 +52,7 @@ private:
     QTimer *secondtimer;
     QGraphicsPixmapItem *Gamebackground, *playerScore, *bossScore;
     QGraphicsPixmapItem *playerskill1, *playerskill2, *playerskill3, *playerskill4, *playerskill5;
-    Player *player;
-    Boss *boss;
+    Role *player, *boss;
     bool skillavailable;
     AttackBook *book_tmp, *skillbook_tmp;
     vector<AttackBook*> book;

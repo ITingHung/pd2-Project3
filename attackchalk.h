@@ -6,7 +6,8 @@
 
 class AttackChalk : public QObject, public QGraphicsPixmapItem
 {
-Q_OBJECT
+    Q_OBJECT
+
 public:
     AttackChalk(int mode);
     static const int chalksize = 50;

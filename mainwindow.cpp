@@ -6,7 +6,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    gamestart(true), timer(new QTimer), secondtimer(new QTimer), counttime(10),
+    timer(new QTimer), secondtimer(new QTimer), counttime(60),
     playerscore(0), bossscore(0)
 {
     ui->setupUi(this);
@@ -19,13 +19,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QPalette HpBarColor, GameoverColor;
     HpBarColor.setColor(QPalette::Highlight, QColor(Qt::red));
     GameoverColor.setColor(QPalette::WindowText, QColor(Qt::yellow));
-    ui->PlayerhpBar->setValue(scene->player->playerhp); ui->BosshpBar->setValue(scene->boss->bosshp);
+    ui->PlayerhpBar->setValue(scene->player->rolehp); ui->BosshpBar->setValue(scene->boss->rolehp);
     ui->PlayerhpBar->setPalette(HpBarColor); ui->BosshpBar->setPalette(HpBarColor);
     ui->GameOver->setPalette(GameoverColor); ui->GameOver->setVisible(false);
     ui->YouWin->setPalette(GameoverColor); ui->YouWin->setVisible(false);
     ui->GameTime->setVisible(false); ui->TimeLable->setVisible(false);
-    this->connect(ui->Start, SIGNAL(clicked()), this, SLOT(startClick_slot()));
 
+    this->connect(ui->Start, SIGNAL(clicked()), this, SLOT(startClick_slot()));
     this->connect(scene, SIGNAL(skilluse()), this, SLOT(connectSkillTime_slot()));
     this->connect(scene, SIGNAL(timeup()), this, SLOT(disconnectSkillTime_slot()));
     this->connect(scene, SIGNAL(attacksuccess(int)), this, SLOT(hpChange_slot(int)));
@@ -41,22 +41,22 @@ void MainWindow::hpChange_slot(int role)
 {
     switch(role){
     case 1:
-        ui->PlayerhpBar->setValue(scene->player->playerhp-1);
-        scene->player->playerhp -= 1;
+        ui->PlayerhpBar->setValue(scene->player->rolehp-1);
+        scene->player->rolehp -= 1;
         ScoreChange(1);
         break;
     case 2:
-        ui->BosshpBar->setValue(scene->boss->bosshp-1);
-        scene->boss->bosshp -= 1;
+        ui->BosshpBar->setValue(scene->boss->rolehp-1);
+        scene->boss->rolehp -= 1;
         ScoreChange(2);
         break;
     case 3:
-        ui->BosshpBar->setValue(scene->boss->bosshp-2);
-        scene->boss->bosshp -= 2;
+        ui->BosshpBar->setValue(scene->boss->rolehp-2);
+        scene->boss->rolehp -= 2;
         if(ui->BosshpBar->value()==1)
         {
-            ui->BosshpBar->setValue(scene->boss->bosshp-1);
-            scene->boss->bosshp -= 1;
+            ui->BosshpBar->setValue(scene->boss->rolehp-1);
+            scene->boss->rolehp -= 1;
         }
         ScoreChange(3);
         break;
@@ -84,7 +84,6 @@ void MainWindow::startClick_slot()
     this->connect(secondtimer, SIGNAL(timeout()), this, SLOT(setGameTime_slot()));
     scene->connect(scene->timer, SIGNAL(timeout()), scene, SLOT(bosstime_slot()));
     scene->boss->connect(scene->boss->timer, SIGNAL(timeout()), scene->boss, SLOT(move()));
-    gamestart = true;
 }
 
 void MainWindow::connectSkillTime_slot()
